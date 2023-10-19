@@ -21,6 +21,13 @@ export const mentoringSlotBuilder = (mentoringSlotCreateData: CreateMentoringSlo
       });
     },
 
+    withWasMissed: (wasMissedByMentor: boolean) => {
+      return mentoringSlotBuilder({
+        ...mentoringSlotCreateData,
+        wasMissedByMentor,
+      });
+    },
+
     build() {
       return mentoringSlotCreateData;
     },

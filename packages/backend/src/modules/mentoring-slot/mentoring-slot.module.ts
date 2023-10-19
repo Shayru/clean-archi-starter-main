@@ -8,6 +8,7 @@ import { DelayMentoringSlotService } from '@src/modules/mentoring-slot/domain/se
 import { DeleteMentoringSlotService } from '@src/modules/mentoring-slot/domain/service/use-case/delete-mentoring-slot.service';
 import { DowngradeMentoringSlotService } from '@src/modules/mentoring-slot/domain/service/use-case/downgrade-mentoring-slot.service';
 import GetMentoringSlotBySlugService from '@src/modules/mentoring-slot/domain/service/use-case/get-mentoring-slot-by-slug.service';
+import { GetMentoringSlotsByMissedService } from '@src/modules/mentoring-slot/domain/service/use-case/get-mentoring-slots-by-missed.service';
 import SearchMentoringSlotsService from '@src/modules/mentoring-slot/domain/service/use-case/search-mentoring-slots.service';
 import { UpdateMentoringSlotService } from '@src/modules/mentoring-slot/domain/service/use-case/update-mentoring-slot.service';
 import MentoringSlotCreationDuplicateVerifierService from '@src/modules/mentoring-slot/domain/service/utils/mentoring-slot-creation-duplicate-verifier/mentoring-slot-creation-duplicate-verifier.service';
@@ -23,6 +24,31 @@ import MentoringSlotController from '@src/modules/mentoring-slot/presentation/co
       provide: 'MentoringSlotRepositoryInterface',
       useClass: MentoringSlotRepository,
     },
+
+    {
+      provide: DelayMentoringSlotService,
+      useFactory: (mentoringSlotRepository: MentoringSlotRepositoryInterface) => {
+        return new DelayMentoringSlotService(mentoringSlotRepository);
+      },
+      inject: ['MentoringSlotRepositoryInterface'],
+    },
+
+    {
+      provide: GetMentoringSlotsByMissedService,
+      useFactory: (mentoringSlotRepository: MentoringSlotRepositoryInterface) => {
+        return new GetMentoringSlotsByMissedService(mentoringSlotRepository);
+      },
+      inject: ['MentoringSlotRepositoryInterface'],
+    },
+
+    {
+      provide: DeleteMentoringSlotService,
+      useFactory: (mentoringSlotRepository: MentoringSlotRepositoryInterface) => {
+        return new DeleteMentoringSlotService(mentoringSlotRepository);
+      },
+      inject: ['MentoringSlotRepositoryInterface'],
+    },
+
     {
       provide: MentoringSlotCreationDuplicateVerifierService,
       useFactory: (mentoringSlotRepository: MentoringSlotRepositoryInterface) => {
@@ -30,6 +56,7 @@ import MentoringSlotController from '@src/modules/mentoring-slot/presentation/co
       },
       inject: ['MentoringSlotRepositoryInterface'],
     },
+
     {
       provide: CreateMentoringSlotService,
       useFactory: (
@@ -40,13 +67,7 @@ import MentoringSlotController from '@src/modules/mentoring-slot/presentation/co
       },
       inject: ['MentoringSlotRepositoryInterface', MentoringSlotCreationDuplicateVerifierService],
     },
-    {
-      provide: DeleteMentoringSlotService,
-      useFactory: (mentoringSlotRepository: MentoringSlotRepositoryInterface) => {
-        return new DeleteMentoringSlotService(mentoringSlotRepository);
-      },
-      inject: ['MentoringSlotRepositoryInterface'],
-    },
+
     {
       provide: SearchMentoringSlotsService,
       useFactory: (mentoringSlotRepository: MentoringSlotRepositoryInterface) => {
@@ -85,13 +106,7 @@ import MentoringSlotController from '@src/modules/mentoring-slot/presentation/co
       },
       inject: ['MentoringSlotRepositoryInterface'],
     },
-    {
-      provide: DelayMentoringSlotService,
-      useFactory: (mentoringSlotRepository: MentoringSlotRepositoryInterface) => {
-        return new DelayMentoringSlotService(mentoringSlotRepository);
-      },
-      inject: ['MentoringSlotRepositoryInterface'],
-    },
+
     {
       provide: DowngradeMentoringSlotService,
       useFactory: (mentoringSlotRepository: MentoringSlotRepositoryInterface) => {

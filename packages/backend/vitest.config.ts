@@ -5,15 +5,15 @@ export default defineConfig({
   test: {
     globals: true,
     alias: {
-      '@src': './src',
-      '@test': './test',
+      '@src': '../src',
+      '@test': '../src',
     },
-    root: './',
+    root: './src',
   },
   resolve: {
     alias: {
-      '@src': './src',
-      '@test': './test',
+      '@src': '../src',
+      '@test': '../src',
     },
   },
 
