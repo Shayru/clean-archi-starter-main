@@ -3,6 +3,7 @@ import {OrderRepositoryInterface} from "@src/modules/order/domain/port/db/order.
 import {OrderStatusEnum} from "@src/modules/order/domain/model/const/order-status.enum";
 import {Exception} from "@src/modules/shared/domain/service/util/exception/exceptions.service";
 import {ExceptionTypeEnum} from "@src/modules/shared/domain/const/exception-type.enum";
+import { isUUIDRegex } from "../utils/uuid-check.util";
 
 export default class UpdateOrderStatusToCancelledService {
     constructor(private readonly ordersRepository: OrderRepositoryInterface) {
@@ -10,10 +11,7 @@ export default class UpdateOrderStatusToCancelledService {
 
     async updateOrderStatusToCancelled(id: string): Promise<Order> {
         //test if orderId is correctUUID format
-        const isUUID = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
-        if (!isUUID.test(id)) {
-            throw new Exception(ExceptionTypeEnum.BadRequest,'Invalid id');
-        }
+        isUUID
 
         const order = await this.ordersRepository.findOneById(id);
 

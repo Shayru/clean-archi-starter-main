@@ -58,8 +58,8 @@ export default class OrderController {
       return await this.deleteOrderService.deleteOrder(id);
   }
 
-  @Post('/create')
-  async createOrder(@Body() createOrderDto: CreateOrderDto) {
+  @Post('/')
+  async createOrder(@Body() createOrderDto: CreateOrderDto): Promise<void> {
     await this.createOrderService.createOrder(createOrderDto);
   }
 
