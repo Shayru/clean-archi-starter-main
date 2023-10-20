@@ -1,37 +1,42 @@
-import { GetMentoringSlotsByMissedService } from '@src/modules/mentoring-slot/domain/service/use-case/get-mentoring-slots-by-missed.service';
+import { MentoringSlotRepositoryInterface } from '@src/modules/mentoring-slot/domain/port/db/mentoring-slot.repository.interface';
+import MentoringSlotCreationDuplicateVerifierService from '@src/modules/mentoring-slot/domain/service/utils/mentoring-slot-creation-duplicate-verifier/mentoring-slot-creation-duplicate-verifier.service';
+import {
+  createMentoringSlotInput,
+  mentoringSlots,
+} from '@src/modules/mentoring-slot/domain/service/utils/mentoring-slot-creation-duplicate-verifier/mentoring-slot-creation-duplicate-verifier.fixture';
+import { Exception } from '@src/modules/shared/domain/service/util/exception/exceptions.service';
+import { GetMentoringSlotsByMissedService } from './get-mentoring-slots-by-missed.service';
 
-describe('get mentoring slots by missed only if the user is authenticated', () => {
-  it('should return the mentoring slots by missed if the user is authenticated', async () => {
-    const mentoringSlotsMissedMock = [
-      {
-        id: 1,
-      },
-    ];
+describe('get mentoring slots by missed only if the user is authentica', () => {
+  let mentoringSlotRepositoryMock: MentoringSlotRepositoryInterface;
 
-    const mentoringSlotRepositoryMock = {
-      findMentoringSlotsByMissed: () => mentoringSlotsMissedMock,
-    };
-
-    const getMentoringSlotsByMissedService = new GetMentoringSlotsByMissedService(mentoringSlotRepositoryMock);
-
-    const returnValue = await getMentoringSlotsByMissedService.getMentoringSlotsByMissed(true);
-
-    expect(returnValue).toEqual(mentoringSlotsMissedMock);
+  beforeAll(() => {
+    mentoringSlotRepositoryMock = {
+      findMentoringSlotsByMissed: () => [],
+    } as unknown as MentoringSlotRepositoryInterface;
   });
 
-  it('should throw an error if the user is not authenticated', async () => {
-    const mentoringSlotsMissedMock = [
-      {
-        id: 1,
-      },
-    ];
+  it('should throw an exception if user is not Autenticated', async () => {
+    mentoringSlotRepositoryMock = {} as unknown as MentoringSlotRepositoryInterface;
 
-    const mentoringSlotRepositoryMock = {
-      findMentoringSlotsByMissed: () => mentoringSlotsMissedMock,
-    };
+    const mentoringSlotRepositoryMockImpl = {
+      ...mentoringSlotRepositoryMock,
+    } as unknown as MentoringSlotRepositoryInterface;
 
-    const getMentoringSlotsByMissedService = new GetMentoringSlotsByMissedService(mentoringSlotRepositoryMock);
+    const getMentoringSlotsByMissedService = new GetMentoringSlotsByMissedService(mentoringSlotRepositoryMockImpl);
 
-    await expect(getMentoringSlotsByMissedService.getMentoringSlotsByMissed(false)).rejects.toThrow();
+    await expect(() => getMentoringSlotsByMissedService.getMentoringSlotsByMissed(false)).rejects.toThrow(Error);
+  });
+
+  it('should return the mentoring slots by missed if the user is authenticated', async () => {
+    const mentoringSlotRepositoryMockImpl = {
+      ...mentoringSlotRepositoryMock,
+      findMentoringSlotsByMissed: () => mentoringSlots,
+    } as unknown as MentoringSlotRepositoryInterface;
+
+    const getMentoringSlotsByMissedService = new GetMentoringSlotsByMissedService(mentoringSlotRepositoryMockImpl);
+
+    const returnValue = await getMentoringSlotsByMissedService.getMentoringSlotsByMissed(true);
+    expect(returnValue).toEqual(mentoringSlots);
   });
 });
